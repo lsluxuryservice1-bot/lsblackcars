@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <title>LS BLACK CARS CHAUFFEUR SERVICE</title>
+    <meta name="description" content="Premium taxi and chauffeur service offering airport transfers, corporate transportation, and luxury car hire. Professional, reliable, and safe rides." />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#000000" />
+    
+    <!-- iOS Specific Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LS Black Cars" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Android/Chrome Specific -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <script type="module" crossorigin src="/assets/index-BjMFuI5I.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BSY2LnqI.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function(){
+        function shouldHide(el){
+          var t=(el.textContent||'').toLowerCase();
+          return t.indexOf('free ride')>-1||t.indexOf('free rides')>-1;
+        }
+        function hide(el){
+          try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+        }
+        function scan(){
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){var el=all[i];if(shouldHide(el)) hide(el);}
+        }
+        scan();
+        var mo=new MutationObserver(function(muts){
+          for(var m=0;m<muts.length;m++){
+            var mut=muts[m];
+            var nodes=mut.addedNodes;
+            for(var n=0;n<nodes.length;n++){
+              var node=nodes[n];
+              if(node&&node.nodeType===1){
+                if(shouldHide(node)) hide(node);
+                if(node.querySelectorAll){
+                  var inner=node.querySelectorAll('*');
+                  for(var j=0;j<inner.length;j++){var el=inner[j];if(shouldHide(el)) hide(el);} 
+                }
+              }
+            }
+          }
+        });
+        mo.observe(document.body,{childList:true,subtree:true});
+
+        function ensurePromoBanner(){
+          var id='promo-route-banner';
+          var existing=document.getElementById(id);
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(onPromotions){
+            if(!existing){
+              var d=document.createElement('div');
+              d.id=id;
+              d.style.background='#000';
+              d.style.color='#fff';
+              d.style.padding='12px 16px';
+              d.style.textAlign='center';
+              d.style.fontWeight='600';
+              d.style.fontSize='14px';
+              d.textContent='10% off for clients';
+              document.body.insertBefore(d, document.body.firstChild);
+            }
+          } else if(existing){
+            existing.remove();
+          }
+        }
+        ensurePromoBanner();
+        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();}catch(_){}return r};
+        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();}catch(_){}return r};
+        window.addEventListener('popstate', function(){try{ensurePromoBanner();}catch(_){}});
+      })();
+    </script>
+  </body>
+</html>
