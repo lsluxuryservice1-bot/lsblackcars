@@ -70,20 +70,77 @@
             var t=(el.textContent||'').toLowerCase();
             if(t.indexOf('free rides')>-1 || t.indexOf('free ride')>-1 || t.indexOf('enjoy complimentary rides')>-1){
               var p=el;
-              var removed=false;
               for(var k=0;k<6 && p && p.parentElement;k++){
-                if(p.classList && p.classList.contains('mt-6')){ try{p.remove(); removed=true;}catch(e){} break; }
+                if(p.classList && (p.classList.contains('mt-6')||p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
                 p=p.parentElement;
               }
-              if(!removed){ try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){} }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
             }
           }
         }
         removeFreeRidesIfPromotions();
+
+        function removeFortyOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('40% off')>-1 || t.indexOf('take 40% off')>-1 || (t.indexOf('chauffeur service')>-1 && t.indexOf('limited time offer')>-1)){
+              var p=el;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && (p.classList.contains('mt-6')||p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
+                p=p.parentElement;
+              }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        removeFortyOffIfPromotions();
+
+        function removeFifteenOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('15% off')>-1 || t.indexOf('15% off chauffeur service')>-1){
+              var p=el;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && (p.classList.contains('mt-6') || p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
+                p=p.parentElement;
+              }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        removeFifteenOffIfPromotions();
+
+        function removeAllPromotionsOffersIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var list=document.querySelectorAll('div');
+          for(var j=0;j<list.length;j++){
+            var t=(list[j].textContent||'').toLowerCase();
+            if(t.indexOf('exclusive offers')>-1||t.indexOf('off ')>-1||t.indexOf('rides')>-1||t.indexOf('offer')>-1){
+              try{list[j].style.display='none';list[j].setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        function runFilters(){
+          hideTenOffIfPromotions();
+          removeFreeRidesIfPromotions();
+          removeFortyOffIfPromotions();
+          removeFifteenOffIfPromotions();
+          removeAllPromotionsOffersIfPromotions();
+        }
+        setTimeout(runFilters,800);
         function notifyNav(){try{if(navigator.serviceWorker && navigator.serviceWorker.controller){navigator.serviceWorker.controller.postMessage('NAV');}}catch(_){} }
-        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}return r};
-        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}return r};
-        window.addEventListener('popstate', function(){try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}});
+        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}return r};
+        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}return r};
+        window.addEventListener('popstate', function(){try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}});
       })();
     </script>
     <script>
@@ -283,6 +340,7 @@
         var etag='';
         function fetchLive(){
           if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
+          if((location.hostname==='localhost' || location.hostname==='127.0.0.1') && location.port==='3000') return;
           var h={};
           if(etag) h['If-None-Match']=etag;
           fetch('/api/promotions',{headers:h}).then(function(r){
@@ -294,6 +352,7 @@
         var es=null;
         function startSSE(){
           if(typeof EventSource==='undefined') return;
+          if((location.hostname==='localhost' || location.hostname==='127.0.0.1') && location.port==='3000') return;
           if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
           try{
             es = new EventSource('/api/promotions/stream');
