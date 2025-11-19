@@ -19,8 +19,8 @@
     
     <!-- Android/Chrome Specific -->
     <meta name="mobile-web-app-capable" content="yes" />
-    <script type="module" crossorigin src="/assets/index-BjMFuI5I.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-BSY2LnqI.css">
+    <script type="module" crossorigin src="/assets/index-bjmfui5i.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-bsy2lnqi.css">
   </head>
   <body>
     <div id="root"></div>
@@ -38,49 +38,277 @@
           for(var i=0;i<all.length;i++){var el=all[i];if(shouldHide(el)) hide(el);}
         }
         scan();
-        var mo=new MutationObserver(function(muts){
-          for(var m=0;m<muts.length;m++){
-            var mut=muts[m];
-            var nodes=mut.addedNodes;
-            for(var n=0;n<nodes.length;n++){
-              var node=nodes[n];
-              if(node&&node.nodeType===1){
-                if(shouldHide(node)) hide(node);
-                if(node.querySelectorAll){
-                  var inner=node.querySelectorAll('*');
-                  for(var j=0;j<inner.length;j++){var el=inner[j];if(shouldHide(el)) hide(el);} 
-                }
-              }
-            }
-          }
-        });
-        mo.observe(document.body,{childList:true,subtree:true});
+        
 
         function ensurePromoBanner(){
           var id='promo-route-banner';
           var existing=document.getElementById(id);
-          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
-          if(onPromotions){
-            if(!existing){
-              var d=document.createElement('div');
-              d.id=id;
-              d.style.background='#000';
-              d.style.color='#fff';
-              d.style.padding='12px 16px';
-              d.style.textAlign='center';
-              d.style.fontWeight='600';
-              d.style.fontSize='14px';
-              d.textContent='10% off for clients';
-              document.body.insertBefore(d, document.body.firstChild);
-            }
-          } else if(existing){
-            existing.remove();
-          }
+          if(existing){ existing.remove(); }
         }
         ensurePromoBanner();
-        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();}catch(_){}return r};
-        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();}catch(_){}return r};
-        window.addEventListener('popstate', function(){try{ensurePromoBanner();}catch(_){}});
+
+        function hideTenOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('10% off')>-1 || t.indexOf('10% discount')>-1){
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        hideTenOffIfPromotions();
+
+        function removeFreeRidesIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('free rides')>-1 || t.indexOf('free ride')>-1 || t.indexOf('enjoy complimentary rides')>-1){
+              var p=el;
+              var removed=false;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && p.classList.contains('mt-6')){ try{p.remove(); removed=true;}catch(e){} break; }
+                p=p.parentElement;
+              }
+              if(!removed){ try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){} }
+            }
+          }
+        }
+        removeFreeRidesIfPromotions();
+        function notifyNav(){try{if(navigator.serviceWorker && navigator.serviceWorker.controller){navigator.serviceWorker.controller.postMessage('NAV');}}catch(_){} }
+        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}return r};
+        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}return r};
+        window.addEventListener('popstate', function(){try{ensurePromoBanner();hideTenOffIfPromotions();removeFreeRidesIfPromotions();notifyNav();}catch(_){}});
+      })();
+    </script>
+    <script>
+      (function(){
+        if(!('serviceWorker' in navigator)) return;
+
+        function deriveBuildVersion(){
+          var script = document.querySelector('script[type="module"][src]');
+          if(!script) return 'static';
+          var src = script.getAttribute('src') || '';
+          var parts = src.split('/');
+          var file = parts[parts.length - 1] || src;
+          var cleaned = file.replace(/[^a-zA-Z0-9._-]/g, '');
+          return cleaned || 'static';
+        }
+
+        function createUpdatePrompt(){
+          var overlay = document.createElement('div');
+          overlay.style.position='fixed';
+          overlay.style.inset='0';
+          overlay.style.background='rgba(0,0,0,0.45)';
+          overlay.style.display='flex';
+          overlay.style.alignItems='center';
+          overlay.style.justifyContent='center';
+          overlay.style.zIndex='10000';
+
+          var card = document.createElement('div');
+          card.style.background='#fff';
+          card.style.borderRadius='14px';
+          card.style.padding='22px';
+          card.style.width='90%';
+          card.style.maxWidth='360px';
+          card.style.boxShadow='0 20px 40px rgba(0,0,0,0.25)';
+          card.style.fontFamily='system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+          
+          var title = document.createElement('div');
+          title.textContent='Update available';
+          title.style.fontSize='18px';
+          title.style.fontWeight='600';
+          title.style.marginBottom='8px';
+          
+          var copy = document.createElement('p');
+          copy.textContent='A new version is ready. Would you like to update now?';
+          copy.style.margin='0';
+          copy.style.fontSize='14px';
+          copy.style.lineHeight='1.4';
+          copy.style.color='#333';
+
+          var actions = document.createElement('div');
+          actions.style.display='flex';
+          actions.style.gap='12px';
+          actions.style.marginTop='18px';
+          actions.style.flexWrap='wrap';
+
+          var laterBtn = document.createElement('button');
+          laterBtn.type='button';
+          laterBtn.textContent='Later';
+          laterBtn.style.flex='1';
+          laterBtn.style.border='1px solid #d0d0d0';
+          laterBtn.style.background='#fff';
+          laterBtn.style.color='#111';
+          laterBtn.style.borderRadius='10px';
+          laterBtn.style.padding='10px';
+          laterBtn.style.fontSize='14px';
+          laterBtn.style.cursor='pointer';
+
+          var updateBtn = document.createElement('button');
+          updateBtn.type='button';
+          updateBtn.textContent='Update Now';
+          updateBtn.style.flex='1';
+          updateBtn.style.border='none';
+          updateBtn.style.background='#111';
+          updateBtn.style.color='#fff';
+          updateBtn.style.borderRadius='10px';
+          updateBtn.style.padding='10px';
+          updateBtn.style.fontSize='14px';
+          updateBtn.style.cursor='pointer';
+
+          actions.appendChild(laterBtn);
+          actions.appendChild(updateBtn);
+
+          card.appendChild(title);
+          card.appendChild(copy);
+          card.appendChild(actions);
+          overlay.appendChild(card);
+
+          function remove(){
+            if(overlay.parentNode){
+              overlay.parentNode.removeChild(overlay);
+            }
+          }
+
+          return {
+            show: function(onConfirm){
+              laterBtn.onclick = remove;
+              updateBtn.onclick = function(){
+                remove();
+                if(typeof onConfirm === 'function') onConfirm();
+              };
+              document.body.appendChild(overlay);
+            },
+            hide: remove
+          };
+        }
+
+        var buildVersion = deriveBuildVersion();
+        navigator.serviceWorker.register('/service-worker.js?v='+encodeURIComponent(buildVersion),{updateViaCache:'none'})
+        .then(function(reg){
+          var waitingWorker = reg.waiting;
+          var prompt = null;
+          var updateAccepted = false;
+
+          function requestUpdate(){
+            if(!waitingWorker) return;
+            updateAccepted = true;
+            try{
+              waitingWorker.postMessage({type:'SKIP_WAITING'});
+            }catch(_){}
+          }
+
+          function showPrompt(){
+            if(!prompt) prompt = createUpdatePrompt();
+            prompt.show(requestUpdate);
+          }
+
+          function handleWaiting(worker){
+            if(!worker || !navigator.serviceWorker.controller) return;
+            waitingWorker = worker;
+            showPrompt();
+          }
+
+          if(waitingWorker){
+            handleWaiting(waitingWorker);
+          }
+
+          reg.addEventListener('updatefound', function(){
+            var newWorker = reg.installing;
+            if(!newWorker) return;
+            newWorker.addEventListener('statechange', function(){
+              if(newWorker.state === 'installed'){
+                handleWaiting(newWorker);
+            }
+            });
+          });
+
+          navigator.serviceWorker.addEventListener('controllerchange', function(){
+            if(updateAccepted){
+              window.location.reload();
+            }
+          });
+
+          function scheduleUpdateChecks(){
+            try{reg.update();}catch(_){}
+          }
+
+          setInterval(scheduleUpdateChecks, 10 * 60 * 1000);
+          document.addEventListener('visibilitychange', function(){
+            if(document.visibilityState === 'visible') scheduleUpdateChecks();
+          });
+        })
+        .catch(function(){});
+      })();
+    </script>
+    <script>
+      (function(){
+        function ensureLivePromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          var id='live-promotions';
+          var el=document.getElementById(id);
+          if(onPromotions){
+            if(!el){
+              el=document.createElement('div');
+              el.id=id;
+              el.style.background='#000';
+              el.style.color='#fff';
+              el.style.padding='10px 12px';
+              el.style.fontSize='13px';
+              el.style.textAlign='center';
+              document.body.insertBefore(el, document.body.firstChild);
+            }
+          } else if(el){
+            el.remove();
+          }
+        }
+        function renderLive(data){
+          var el=document.getElementById('live-promotions');
+          if(!el) return;
+          var s='';
+          if(data&&data.items&&data.items.length){
+            for(var i=0;i<data.items.length;i++){
+              var it=data.items[i];
+              s+= '<span style="margin:0 8px">'+(it.title||'')+'</span>';
+            }
+          }
+          el.innerHTML=s||'Promotions';
+        }
+        var etag='';
+        function fetchLive(){
+          if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
+          var h={};
+          if(etag) h['If-None-Match']=etag;
+          fetch('/api/promotions',{headers:h}).then(function(r){
+            if(r.status===304) return null;
+            etag=r.headers.get('ETag')||'';
+            return r.json();
+          }).then(function(j){ if(j) renderLive(j); }).catch(function(){});
+        }
+        var es=null;
+        function startSSE(){
+          if(typeof EventSource==='undefined') return;
+          if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
+          try{
+            es = new EventSource('/api/promotions/stream');
+            es.onmessage = function(ev){
+              try{ var j = JSON.parse(ev.data); renderLive(j); }catch(_){ }
+            };
+            es.onerror = function(){ try{ es.close(); }catch(_){ } es=null; };
+          }catch(_){ }
+        }
+        ensureLivePromotions();
+        fetchLive(); startSSE();
+        setInterval(fetchLive,30000);
+        var _ps3=history.pushState;history.pushState=function(){var r=_ps3.apply(this,arguments);try{ensureLivePromotions();fetchLive();}catch(_){}return r};
+        var _rs3=history.replaceState;history.replaceState=function(){var r=_rs3.apply(this,arguments);try{ensureLivePromotions();fetchLive();}catch(_){}return r};
+        window.addEventListener('popstate',function(){try{ensureLivePromotions();fetchLive();}catch(_){}});
       })();
     </script>
   </body>

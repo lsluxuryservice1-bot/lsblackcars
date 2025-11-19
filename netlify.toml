@@ -1,6 +1,5 @@
 [build]
-  command = "npm run build"
-  publish = "dist/public"
+  publish = "."
 
 [functions]
   directory = "netlify/functions"
@@ -15,3 +14,7 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+[[edge_functions]]
+  path = "/api/promotions/stream"
+  function = "promotions"

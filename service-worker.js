@@ -1,63 +1,74 @@
-const CACHE_VERSION = 'v1763436837512';
+const deriveVersion = () => {
+  try {
+    const url = new URL(self.location.href);
+    const versionParam = url.searchParams.get('v');
+    if (versionParam) return versionParam;
+    return url.pathname;
+  } catch (_) {
+    return 'static';
+  }
+};
+
+const sanitizeVersion = (value) => {
+  return (value || 'static').replace(/[^a-zA-Z0-9._-]/g, '');
+};
+
+const CACHE_VERSION = sanitizeVersion(deriveVersion());
 const CACHE_NAME = `pwa-cache-${CACHE_VERSION}`;
-const urlsToCache = [
+const APP_SHELL = Array.from(
+  new Set([
   '/',
+    '/index.html',
   '/book',
   '/trips',
   '/help'
-];
+  ])
+);
 
-// Install event - cache key resources
+async function notifyClients(message) {
+  if (!message) return;
+  try {
+    const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    clients.forEach((client) => {
+      try {
+        client.postMessage(message);
+      } catch (_) {}
+    });
+  } catch (_) {}
+}
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(['/','/index.html']);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
   );
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => Promise.all(cacheNames.map((name) => {
-      if (name !== CACHE_NAME) return caches.delete(name);
-    })))
+    (async () => {
+      const cacheNames = await caches.keys();
+      await Promise.all(
+        cacheNames.map((name) => {
+          if (name === CACHE_NAME) return Promise.resolve();
+          if (name.startsWith('pwa-cache-')) {
+            return caches.delete(name);
+          }
+          return Promise.resolve();
+        })
+      );
+      await self.clients.claim();
+      await notifyClients({ type: 'SW_ACTIVATED', version: CACHE_VERSION });
+    })()
   );
-  self.clients.claim();
 });
-
-let LAST_NAV_AT = Date.now();
-let ACTIVATE_TIMER = null;
-let ACTIVATE_DEADLINE = null;
-
-function canActivate() {
-  return Date.now() - LAST_NAV_AT > 8000;
-}
-
-function attemptActivate() {
-  if (canActivate()) {
-    self.skipWaiting();
-    return;
-  }
-  if (!ACTIVATE_DEADLINE) ACTIVATE_DEADLINE = Date.now() + 120000;
-  if (Date.now() < ACTIVATE_DEADLINE) {
-    clearTimeout(ACTIVATE_TIMER);
-    ACTIVATE_TIMER = setTimeout(attemptActivate, 5000);
-  } else {
-    self.skipWaiting();
-  }
-}
 
 // Token storage endpoint for iOS cross-context sharing
 const TOKEN_CACHE_NAME = 'auth-token-cache';
 const TOKEN_ENDPOINT = '/__auth-token-cache__';
 
-// Fetch event - network first, fallback to cache
 self.addEventListener('fetch', (event) => {
-  // CRITICAL: Skip navigation requests to avoid iOS standalone mode bugs
   const url = new URL(event.request.url);
   if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
-    LAST_NAV_AT = Date.now();
     event.respondWith(
       fetch(event.request)
         .then((response) => {
@@ -165,6 +176,6 @@ self.addEventListener('message', (event) => {
   const data = event.data;
   if (!data) return;
   if (data === 'SKIP_WAITING' || (typeof data === 'object' && data.type === 'SKIP_WAITING')) {
-    attemptActivate();
+    self.skipWaiting();
   }
 });
