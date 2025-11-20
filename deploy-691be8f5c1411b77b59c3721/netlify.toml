@@ -1,0 +1,20 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[edge_functions]]
+  path = "/api/promotions/stream"
+  function = "promotions"

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <title>LS BLACK CARS CHAUFFEUR SERVICE</title>
+    <meta name="description" content="Premium taxi and chauffeur service offering airport transfers, corporate transportation, and luxury car hire. Professional, reliable, and safe rides." />
+    
+    <!-- PWA Meta Tags -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#000000" />
+    
+    <!-- iOS Specific Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LS Black Cars" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    
+    <!-- Android/Chrome Specific -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <script type="module" crossorigin src="/assets/index-bjmfui5i.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-bsy2lnqi.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function(){
+        function shouldHide(el){
+          var t=(el.textContent||'').toLowerCase();
+          return t.indexOf('free ride')>-1||t.indexOf('free rides')>-1;
+        }
+        function hide(el){
+          try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+        }
+        function scan(){
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){var el=all[i];if(shouldHide(el)) hide(el);}
+        }
+        scan();
+        
+
+        function ensurePromoBanner(){
+          var id='promo-route-banner';
+          var existing=document.getElementById(id);
+          if(existing){ existing.remove(); }
+        }
+        ensurePromoBanner();
+
+        function hideTenOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('10% off')>-1 || t.indexOf('10% discount')>-1){
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        hideTenOffIfPromotions();
+
+        function removeFreeRidesIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('free rides')>-1 || t.indexOf('free ride')>-1 || t.indexOf('enjoy complimentary rides')>-1){
+              var p=el;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && (p.classList.contains('mt-6')||p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
+                p=p.parentElement;
+              }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        removeFreeRidesIfPromotions();
+
+        function removeFortyOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('40% off')>-1 || t.indexOf('take 40% off')>-1 || (t.indexOf('chauffeur service')>-1 && t.indexOf('limited time offer')>-1)){
+              var p=el;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && (p.classList.contains('mt-6')||p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
+                p=p.parentElement;
+              }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        removeFortyOffIfPromotions();
+
+        function removeFifteenOffIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var all=document.querySelectorAll('body *');
+          for(var i=0;i<all.length;i++){
+            var el=all[i];
+            var t=(el.textContent||'').toLowerCase();
+            if(t.indexOf('15% off')>-1 || t.indexOf('15% off chauffeur service')>-1){
+              var p=el;
+              for(var k=0;k<6 && p && p.parentElement;k++){
+                if(p.classList && (p.classList.contains('mt-6') || p.classList.contains('p-6')||p.classList.contains('space-y-3'))){ try{p.style.display='none';p.setAttribute('aria-hidden','true');}catch(e){} break; }
+                p=p.parentElement;
+              }
+              try{el.style.display='none';el.setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        removeFifteenOffIfPromotions();
+
+        function removeAllPromotionsOffersIfPromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          if(!onPromotions) return;
+          var list=document.querySelectorAll('div');
+          for(var j=0;j<list.length;j++){
+            var t=(list[j].textContent||'').toLowerCase();
+            if(t.indexOf('exclusive offers')>-1||t.indexOf('off ')>-1||t.indexOf('rides')>-1||t.indexOf('offer')>-1){
+              try{list[j].style.display='none';list[j].setAttribute('aria-hidden','true');}catch(e){}
+            }
+          }
+        }
+        function renamePromotionsButton(){
+          var buttons=document.querySelectorAll('button,[role="button"]');
+          for(var i=0;i<buttons.length;i++){
+            var b=buttons[i];
+            var t=(b.textContent||'').toLowerCase().trim();
+            if(t==='promotions'){ try{b.textContent='Promo'; b.setAttribute('aria-label','Promo');}catch(e){} }
+          }
+        }
+        var blogOverlay=null;
+        function ensureBlogOverlay(){
+          if(blogOverlay) return blogOverlay;
+          var o=document.createElement('div');
+          o.style.position='fixed';
+          o.style.inset='0';
+          o.style.background='rgba(0,0,0,0.6)';
+          o.style.zIndex='10000';
+          o.style.display='flex';
+          o.style.alignItems='center';
+          o.style.justifyContent='center';
+          var c=document.createElement('div');
+          c.style.width='95%';
+          c.style.maxWidth='960px';
+          c.style.height='80%';
+          c.style.background='#000';
+          c.style.borderRadius='12px';
+          c.style.overflow='hidden';
+          c.style.boxShadow='0 20px 40px rgba(0,0,0,0.35)';
+          var close=document.createElement('button');
+          close.textContent='Close';
+          close.style.position='absolute';
+          close.style.top='12px';
+          close.style.right='12px';
+          close.style.background='#fff';
+          close.style.color='#000';
+          close.style.border='none';
+          close.style.borderRadius='8px';
+          close.style.padding='8px 12px';
+          close.style.cursor='pointer';
+          close.onclick=function(){ try{ if(o.parentNode) o.parentNode.removeChild(o);}catch(_){} };
+          var f=document.createElement('iframe');
+          f.src='https://www.lsblackcars.com/promotions';
+          f.setAttribute('frameborder','0');
+          f.setAttribute('allowfullscreen','true');
+          f.style.width='100%';
+          f.style.height='100%';
+          f.style.background='#fff';
+          c.appendChild(f);
+          o.appendChild(c);
+          o.appendChild(close);
+          blogOverlay=o;
+          return blogOverlay;
+        }
+        function attachBlogIframeToPromoButton(){
+          var buttons=document.querySelectorAll('button,[role="button"]');
+          for(var i=0;i<buttons.length;i++){
+            var b=buttons[i];
+            var t=(b.textContent||'').toLowerCase().trim();
+            if(t==='promo'){
+              if(!b.__promoIframeBound){
+                b.__promoIframeBound=true;
+                b.addEventListener('click',function(e){ e.preventDefault(); try{ var o=ensureBlogOverlay(); document.body.appendChild(o);}catch(_){}});
+              }
+            }
+          }
+        }
+        function runFilters(){
+          hideTenOffIfPromotions();
+          removeFreeRidesIfPromotions();
+          removeFortyOffIfPromotions();
+          removeFifteenOffIfPromotions();
+          removeAllPromotionsOffersIfPromotions();
+          renamePromotionsButton();
+          attachBlogIframeToPromoButton();
+        }
+        setTimeout(runFilters,800);
+        function notifyNav(){try{if(navigator.serviceWorker && navigator.serviceWorker.controller){navigator.serviceWorker.controller.postMessage('NAV');}}catch(_){} }
+        var _ps=history.pushState;history.pushState=function(){var r=_ps.apply(this,arguments);try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}return r};
+        var _rs=history.replaceState;history.replaceState=function(){var r=_rs.apply(this,arguments);try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}return r};
+        window.addEventListener('popstate', function(){try{ensurePromoBanner();setTimeout(runFilters,800);notifyNav();}catch(_){}});
+      })();
+    </script>
+    <script>
+      (function(){
+        if(!('serviceWorker' in navigator)) return;
+
+        function deriveBuildVersion(){
+          var script = document.querySelector('script[type="module"][src]');
+          if(!script) return 'static';
+          var src = script.getAttribute('src') || '';
+          var parts = src.split('/');
+          var file = parts[parts.length - 1] || src;
+          var cleaned = file.replace(/[^a-zA-Z0-9._-]/g, '');
+          return cleaned || 'static';
+        }
+
+        function createUpdatePrompt(){
+          var overlay = document.createElement('div');
+          overlay.style.position='fixed';
+          overlay.style.inset='0';
+          overlay.style.background='rgba(0,0,0,0.45)';
+          overlay.style.display='flex';
+          overlay.style.alignItems='center';
+          overlay.style.justifyContent='center';
+          overlay.style.zIndex='10000';
+
+          var card = document.createElement('div');
+          card.style.background='#fff';
+          card.style.borderRadius='14px';
+          card.style.padding='22px';
+          card.style.width='90%';
+          card.style.maxWidth='360px';
+          card.style.boxShadow='0 20px 40px rgba(0,0,0,0.25)';
+          card.style.fontFamily='system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif';
+          
+          var title = document.createElement('div');
+          title.textContent='Update available';
+          title.style.fontSize='18px';
+          title.style.fontWeight='600';
+          title.style.marginBottom='8px';
+          
+          var copy = document.createElement('p');
+          copy.textContent='A new version is ready. Would you like to update now?';
+          copy.style.margin='0';
+          copy.style.fontSize='14px';
+          copy.style.lineHeight='1.4';
+          copy.style.color='#333';
+
+          var actions = document.createElement('div');
+          actions.style.display='flex';
+          actions.style.gap='12px';
+          actions.style.marginTop='18px';
+          actions.style.flexWrap='wrap';
+
+          var laterBtn = document.createElement('button');
+          laterBtn.type='button';
+          laterBtn.textContent='Later';
+          laterBtn.style.flex='1';
+          laterBtn.style.border='1px solid #d0d0d0';
+          laterBtn.style.background='#fff';
+          laterBtn.style.color='#111';
+          laterBtn.style.borderRadius='10px';
+          laterBtn.style.padding='10px';
+          laterBtn.style.fontSize='14px';
+          laterBtn.style.cursor='pointer';
+
+          var updateBtn = document.createElement('button');
+          updateBtn.type='button';
+          updateBtn.textContent='Update Now';
+          updateBtn.style.flex='1';
+          updateBtn.style.border='none';
+          updateBtn.style.background='#111';
+          updateBtn.style.color='#fff';
+          updateBtn.style.borderRadius='10px';
+          updateBtn.style.padding='10px';
+          updateBtn.style.fontSize='14px';
+          updateBtn.style.cursor='pointer';
+
+          actions.appendChild(laterBtn);
+          actions.appendChild(updateBtn);
+
+          card.appendChild(title);
+          card.appendChild(copy);
+          card.appendChild(actions);
+          overlay.appendChild(card);
+
+          function remove(){
+            if(overlay.parentNode){
+              overlay.parentNode.removeChild(overlay);
+            }
+          }
+
+          return {
+            show: function(onConfirm){
+              laterBtn.onclick = remove;
+              updateBtn.onclick = function(){
+                remove();
+                if(typeof onConfirm === 'function') onConfirm();
+              };
+              document.body.appendChild(overlay);
+            },
+            hide: remove
+          };
+        }
+
+        var buildVersion = deriveBuildVersion();
+        navigator.serviceWorker.register('/service-worker.js?v='+encodeURIComponent(buildVersion),{updateViaCache:'none'})
+        .then(function(reg){
+          var waitingWorker = reg.waiting;
+          var prompt = null;
+          var updateAccepted = false;
+
+          function requestUpdate(){
+            if(!waitingWorker) return;
+            updateAccepted = true;
+            try{
+              waitingWorker.postMessage({type:'SKIP_WAITING'});
+            }catch(_){}
+          }
+
+          function showPrompt(){
+            if(!prompt) prompt = createUpdatePrompt();
+            prompt.show(requestUpdate);
+          }
+
+          function handleWaiting(worker){
+            if(!worker || !navigator.serviceWorker.controller) return;
+            waitingWorker = worker;
+            showPrompt();
+          }
+
+          if(waitingWorker){
+            handleWaiting(waitingWorker);
+          }
+
+          reg.addEventListener('updatefound', function(){
+            var newWorker = reg.installing;
+            if(!newWorker) return;
+            newWorker.addEventListener('statechange', function(){
+              if(newWorker.state === 'installed'){
+                handleWaiting(newWorker);
+            }
+            });
+          });
+
+          navigator.serviceWorker.addEventListener('controllerchange', function(){
+            if(updateAccepted){
+              window.location.reload();
+            }
+          });
+
+          function scheduleUpdateChecks(){
+            try{reg.update();}catch(_){}
+          }
+
+          setInterval(scheduleUpdateChecks, 10 * 60 * 1000);
+          document.addEventListener('visibilitychange', function(){
+            if(document.visibilityState === 'visible') scheduleUpdateChecks();
+          });
+        })
+        .catch(function(){});
+      })();
+    </script>
+    <script>
+      (function(){
+        function ensureLivePromotions(){
+          var onPromotions=location.pathname.toLowerCase().indexOf('/promotions')===0;
+          var id='live-promotions';
+          var el=document.getElementById(id);
+          if(onPromotions){
+            if(!el){
+              el=document.createElement('div');
+              el.id=id;
+              el.style.background='#000';
+              el.style.color='#fff';
+              el.style.padding='10px 12px';
+              el.style.fontSize='13px';
+              el.style.textAlign='center';
+              document.body.insertBefore(el, document.body.firstChild);
+            }
+          } else if(el){
+            el.remove();
+          }
+        }
+        function renderLive(data){
+          var el=document.getElementById('live-promotions');
+          if(!el) return;
+          var s='';
+          if(data&&data.items&&data.items.length){
+            for(var i=0;i<data.items.length;i++){
+              var it=data.items[i];
+              s+= '<span style="margin:0 8px">'+(it.title||'')+'</span>';
+            }
+          }
+          el.innerHTML=s||'Promotions';
+        }
+        var etag='';
+        function fetchLive(){
+          if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
+          if((location.hostname==='localhost' || location.hostname==='127.0.0.1') && location.port==='3000') return;
+          var h={};
+          if(etag) h['If-None-Match']=etag;
+          fetch('/api/promotions',{headers:h}).then(function(r){
+            if(r.status===304) return null;
+            etag=r.headers.get('ETag')||'';
+            return r.json();
+          }).then(function(j){ if(j) renderLive(j); }).catch(function(){});
+        }
+        var es=null;
+        function startSSE(){
+          if(typeof EventSource==='undefined') return;
+          if((location.hostname==='localhost' || location.hostname==='127.0.0.1') && location.port==='3000') return;
+          if(location.pathname.toLowerCase().indexOf('/promotions')!==0) return;
+          try{
+            es = new EventSource('/api/promotions/stream');
+            es.onmessage = function(ev){
+              try{ var j = JSON.parse(ev.data); renderLive(j); }catch(_){ }
+            };
+            es.onerror = function(){ try{ es.close(); }catch(_){ } es=null; };
+          }catch(_){ }
+        }
+        ensureLivePromotions();
+        fetchLive(); startSSE();
+        setInterval(fetchLive,30000);
+        var _ps3=history.pushState;history.pushState=function(){var r=_ps3.apply(this,arguments);try{ensureLivePromotions();fetchLive();}catch(_){}return r};
+        var _rs3=history.replaceState;history.replaceState=function(){var r=_rs3.apply(this,arguments);try{ensureLivePromotions();fetchLive();}catch(_){}return r};
+        window.addEventListener('popstate',function(){try{ensureLivePromotions();fetchLive();}catch(_){}});
+      })();
+    </script>
+  </body>
+</html>
